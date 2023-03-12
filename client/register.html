@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.3/tailwind.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="bg-gray-100">
+    <div class="flex items-center justify-center h-screen">
+        <div class="w-full max-w-md">
+            <div class="bg-white rounded-lg overflow-hidden shadow-md">
+                <form class="px-8 pt-6 pb-8 mb-4" id="my-form">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                            Username
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="username" type="text" placeholder="Enter your username" name="username">
+                        <p class="text-red-500 text-xs italic hidden" id="username-error">Please enter a username.</p>
+                        <p class="text-red-500 text-xs italic hidden" id="username-length-error">Username should be at
+                            least 6 characters long.</p>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                            Email
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="email" type="email" placeholder="Enter your email address" name="email">
+                        <p class="text-red-500 text-xs italic hidden" id="email-error">Please enter a valid email
+                            address.</p>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                            Password
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                            id="password" type="password" placeholder="********" name="password">
+                        <p class="text-red-500 text-xs italic hidden" id="password-error">Password must be at least 8
+                            characters containing at least one upper and lower case letter and at least one special
+                            character.</p>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <button
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="submit">
+                            Register
+                        </button>
+                        <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+                            href="login.html">
+                            Already have an account?
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get the form and password input elements
+        const form = document.querySelector('#my-form');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            // Get the form inputs
+            const usernameInput = document.getElementById('username');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            // Get the error elements
+            const usernameError = document.getElementById('username-error');
+            const usernameLengthError = document.getElementById('username-length-error');
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
+
+            // Reset the error messages
+            usernameError.classList.add('hidden');
+            usernameLengthError.classList.add('hidden');
+            emailError.classList.add('hidden');
+            passwordError.classList.add('hidden');
+
+            // Validate the inputs
+            let isValid = true;
+
+            if (usernameInput.value === '') {
+                usernameError.classList.remove('hidden');
+                isValid = false;
+            } else if (usernameInput.value.length < 6) {
+                usernameLengthError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            if (!isValidEmail(emailInput.value)) {
+                emailError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            if (!isValidPassword(passwordInput.value)) {
+                passwordError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // If all inputs are valid, submit the form
+            if (isValid) {
+                const formData = new FormData(event.target);
+
+                const data = {
+                    username: formData.get('username'),
+                    email: formData.get('email'),
+                    password: formData.get('password')
+                };
+
+                console.log(data);
+
+                const response = await fetch('/register.html', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                }).catch(error => {
+                    console.error(error);
+                });
+
+                const result = await response.json();
+
+                if (result.username == data.username) {
+                    console.log(result);
+                    window.location.href = "index.html";
+                }
+            }
+        });
+
+
+        function isValidEmail(email) {
+            // A simple email validation with regex
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        function isValidPassword(password) {
+            // A simple password validation with regex
+            const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+])[\w!@#$%^&*()_+]{8,}$/;
+            return regex.test(password);
+        }
+
+    </script>
+
+</body>
+
+</html>

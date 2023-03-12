@@ -1,0 +1,28 @@
+{
+  "name": "login-system",
+  "version": "1.0.1",
+  "description": "This is a node server login sytem for testing purposes.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "author": "Eben Alexis Vosloo",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "mongodb": "^5.1.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.2.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ekk-0/Node-Login-System.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ekk-0/Node-Login-System/issues"
+  },
+  "homepage": "https://github.com/Ekk-0/Node-Login-System#readme"
+}
