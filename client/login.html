@@ -112,11 +112,9 @@
 
             if (result.success) {
                 console.log(result);
-                document.cookie = `sessionId=${result.user}; path=/`;
-                // window.location.href = `index.html`;
+                window.location.href = `index.html`;
             } else {
-                document.cookie = `sessionId=${result.user}; path=/`;
-                console.log(result);
+                alert('Failed to login');
             }
         });
     </script>

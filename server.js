@@ -4,7 +4,7 @@ import path from 'path';
 import crypto from 'crypto';
 
 import { login, register } from './database/index.js';
-import {parseCookies, parseRequestBody} from './utils/index.js';
+import { parseCookies, parseRequestBody } from './utils/index.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -45,12 +45,11 @@ const server = createServer(async (req, res) => {
         filePath += '.html';
     }
 
-
     console.log(`HTTP:${req.httpVersion}: ${req.method}: ${filePath}`);
 
     switch (req.method) {
         case 'GET':
-            readFile(`client/${filePath}`, (err, data) => {
+            readFile(`client/${filePath}`, 'utf8', (err, data) => {
                 if (err) {
                     if (err.code === 'ENOENT') {
                         readFile('client/error/404.html', (err, data) => {
@@ -78,9 +77,29 @@ const server = createServer(async (req, res) => {
                         res.end('Error: Could not read file');
                     }
                 } else {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'text/html');
-                    res.end(data);
+                    console.log(Object.keys(session.data).length);
+                    if (filePath == '/login.html' || filePath == '/register.html' || filePath == '/logout.html') {
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'text/html');
+                        res.end(data);
+                    } else if (Object.keys(session.data).length > 0) {
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'text/html');
+                        data = data.replace('{{Username}}', session.data.username);
+                        res.end(data);
+                    } else {
+                        readFile('client/login.html', (err, data) => {
+                            if (err) {
+                                res.statusCode = 500;
+                                res.setHeader('Content-Type', 'text/plain');
+                                res.end('Internal Server Error');
+                            } else {
+                                res.statusCode = 200;
+                                res.setHeader('Content-Type', 'text/html');
+                                res.end(data);
+                            }
+                        });
+                    }
                 }
             });
             break;
