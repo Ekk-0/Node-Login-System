@@ -77,28 +77,42 @@ const server = createServer(async (req, res) => {
                         res.end('Error: Could not read file');
                     }
                 } else {
-                    console.log(Object.keys(session.data).length);
                     if (filePath == '/login.html' || filePath == '/register.html' || filePath == '/logout.html') {
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'text/html');
-                        res.end(data);
+                        if (filePath == '/logout.html') {
+                            // perform logout action
+                            res.writeHead(302, { 'Location': 'login.html' });
+                            res.end();
+                        } else {
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'text/html');
+                            res.end(data);
+                        }
                     } else if (Object.keys(session.data).length > 0) {
+
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'text/html');
                         data = data.replace('{{Username}}', session.data.username);
                         res.end(data);
+
+
                     } else {
+
                         readFile('client/login.html', (err, data) => {
                             if (err) {
+
                                 res.statusCode = 500;
                                 res.setHeader('Content-Type', 'text/plain');
                                 res.end('Internal Server Error');
+
                             } else {
+
                                 res.statusCode = 200;
                                 res.setHeader('Content-Type', 'text/html');
                                 res.end(data);
+
                             }
                         });
+
                     }
                 }
             });
